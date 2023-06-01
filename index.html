@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Scroll-driven Contacts List</title>
+<style>
+    body {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  font-family: sans-serif, system-ui;
+}
+
+main {
+  width: 66ch;
+  margin: 0 auto;
+  padding: 50vh 0;
+}
+
+main > ul {
+  list-style-type: none;
+}
+
+li li {
+  padding-left: 1rem;
+}
+
+.indicators li {
+  animation: indicate both linear;
+  animation-range: cover;
+}
+
+.indicators .indicator--inactive {
+  opacity: 0.25;
+  scale: 0.5;
+}
+
+@keyframes indicate {
+  50% { scale: 4; opacity: 1; translate: -200% 0; z-index: 2; }
+}
+
+h2 {
+  background: hsl(var(--hue, 10) 100% 86%);
+  padding: 1rem;
+  margin: 2rem 0;
+  position: sticky;
+  top: 0;
+}
+
+.indicators {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.indicators li {
+  font-size: clamp(0.5rem, 1.5vmin, 1rem);
+  font-weight: bold;
+  opacity: 0.25;
+  scale: 1;
+}
+
+h1 {
+  text-transform: uppercase;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+  font-size: 2rem;
+  list-style-position: inside;
+}
+</style>
+</head>
+<body>
+    <div id="app"></div>
+<script>
+import React from "https://cdn.skypack.dev/react@17.0.1"
+import { render } from "https://cdn.skypack.dev/react-dom@17.0.1"
+import { faker } from "https://cdn.skypack.dev/@faker-js/faker@8.0.2"
+
+const CONTACTS = new Array(200).fill().map(() => ({
+  name: faker.person.fullName()
+})).sort((a, b) => {
+  const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+  const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+
+  // names must be equal
+  return 0;
+})
+
+const ROOT_NODE = document.querySelector('#app')
+// const ROOT = createRoot(ROOT_NODE)
+
+const App = () => (
+  <main style={{ timelineScope: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter => `--${letter.toLowerCase()}`).join(',')}}>
+    <h1>Contacts</h1>
+    <ul className="indicators">
+      {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) => {
+        const peeps = CONTACTS.filter(contact => contact.name.startsWith(letter))
+        if (peeps.length === 0) return null
+        return <li style={{ animationTimeline: `--${letter.toLowerCase()}`}} className={`indicator ${peeps.length === 0 ? 'indicator--inactive' : ''} indicator--${letter.toLowerCase()}`} key={`indicator--${letter}`}>{letter}</li>
+      })}      
+    </ul>
+    <ul>
+      {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) => {
+        const peeps = CONTACTS.filter(contact => contact.name.startsWith(letter))
+        if (peeps.length === 0) return null
+        return (
+          <li style={{ 'viewTimeline': `--${letter.toLowerCase()}`}} className={`section section--${letter.toLowerCase()}`} key={letter}>
+            <h2 style={{'--hue': Math.random() * 360 }}>{letter}</h2>
+            <ul>
+              {peeps.map(peep => (
+                <li key={peep.name}>{peep.name}</li>
+              ))}
+            </ul>
+          </li>
+        )
+      })}
+    </ul>
+  </main>
+)
+
+render(<App/>, ROOT_NODE)
+</script>
+</body>
+</html>
