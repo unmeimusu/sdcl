@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Scroll-driven Contacts List</title>
-<style>
-    body {
+  <title>Contact List</title>
+  <style>
+body {
   display: grid;
   place-items: center;
   min-height: 100vh;
@@ -77,11 +77,19 @@ li {
   font-size: 2rem;
   list-style-position: inside;
 }
-</style>
+  </style>
 </head>
+<div id="app"></div>
 <body>
-    <div id="app"></div>
-<script>
+  <div class="container">
+    <h1>Contact List</h1>
+
+    <input type="text" id="searchInput" placeholder="Search contacts...">
+
+    <ul id="contactList"></ul>
+  </div>
+
+  <script>
 import React from "https://cdn.skypack.dev/react@17.0.1"
 import { render } from "https://cdn.skypack.dev/react-dom@17.0.1"
 import { faker } from "https://cdn.skypack.dev/@faker-js/faker@8.0.2"
@@ -135,6 +143,6 @@ const App = () => (
 )
 
 render(<App/>, ROOT_NODE)
-</script>
+  </script>
 </body>
 </html>
